@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 
 namespace CbmCode.CodeGeneration
 {
@@ -15,9 +16,13 @@ namespace CbmCode.CodeGeneration
         public (bool success, List<string> generatedLines) Do()
         {
             List<string> cleanedLines = RemoveComments(_sourceLines);
-            var (success, withVariableSubstitution) = SubstituteVariables(cleanedLines);
+            var (success, withSubstitutedVariables) = SubstituteVariables(cleanedLines);
             if (success)
-                return (true, SubstituteLabels(withVariableSubstitution));
+            {
+                List<string> withInlinedConstants = InlineConstants(withSubstitutedVariables);
+                var withSubstitutedLabels = SubstituteLabels(withInlinedConstants);
+                return (true, withSubstitutedLabels);
+            }
             else
                 return (false, null);
         }
@@ -166,6 +171,40 @@ namespace CbmCode.CodeGeneration
             }
 
             return sansLabels;
+        }
+
+        List<string> InlineConstants(List<string> lines)
+        {
+
+            var constants = new Dictionary<string, string>();
+
+            var sansConstantDeclarations = new List<string>();
+            foreach (var line in lines)
+            {
+                if (line.StartsWith("@constants:", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    var declaredConstantsAndValues = line.Substring(11).Split(',');
+                    foreach (var cav in declaredConstantsAndValues)
+                    {
+                        var constantAndValue = cav.Split('=');
+                        var constant = constantAndValue.First().Trim();
+                        var value = constantAndValue.Last().Trim();
+                        constants.Add(constant, value);
+                    }
+                }
+                else
+                    sansConstantDeclarations.Add(line);
+            }
+
+            var withConstantInlining = new List<string>();
+            foreach (var line in sansConstantDeclarations)
+            {
+                var newLine = line;
+                foreach (var av in constants)
+                    newLine = newLine.Replace(av.Key, av.Value);
+                withConstantInlining.Add(newLine);
+            }
+            return withConstantInlining;
         }
     }
 }

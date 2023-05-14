@@ -36,8 +36,8 @@ namespace CbmCodeTest
             var source = SA(
 @"print ""we're substitutin' variables here mate!""
 @variables: count%, message$, _sum
-    input ""give me a sum and a message""; _sum, message$
-    count% = 42");//Note: I wrote the sum variable as _sum to prevent the substring 'sum' to be replaced.
+    input ""give me a sum and a message""; _sum, message$//I wrote _sum to protect sum from being replaced.
+    count% = 42");
 
             var generate = new Generate(source);
             var (success, generatedLines) = generate.Do();
@@ -63,10 +63,24 @@ namespace CbmCodeTest
             CollectionAssert.AreEqual(expected, generatedLines);
         }
 
+        [TestMethod]
+        public void InlineConstants()
+        {
+            var expected = A("1 let X = 3.14 * 3 + 2.7");
+            var source = SA(
+@"@constants: PI = 3.14, E = 2.7
+let X = PI * 3 + E");
+
+            var generate = new Generate(source);
+            var (success, generatedLines) = generate.Do();
+            Assert.IsTrue(success);
+            CollectionAssert.AreEqual(expected, generatedLines);
+        }
+
         string[] SA(string source) =>
             source.Split(A(Environment.NewLine), StringSplitOptions.None);
 
-        string[] A(params string[] strings) =>
-            strings;
+        T[] A<T>(params T[] args) =>
+            args;
     }
 }
