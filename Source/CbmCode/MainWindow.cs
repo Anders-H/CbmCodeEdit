@@ -47,7 +47,7 @@ namespace CbmCode
 
                 ClearUndoBuffer();
                 PushCurrentFile(filename);
-                richTextBox1.Text = code;
+                rtbIn.Text = code;
                 Cursor = Cursors.Default;
             }
             catch (Exception e)
@@ -65,6 +65,12 @@ namespace CbmCode
         private void PushCurrentFile(string filename)
         {
             // TODO
+        }
+
+        private void outputWindowToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            outputWindowToolStripMenuItem.Checked = !outputWindowToolStripMenuItem.Checked;
+            splitContainer1.Panel2Collapsed = !outputWindowToolStripMenuItem.Checked;
         }
     }
 }

@@ -5,7 +5,7 @@ A simple text editor for editing Commodore BASIC code, and exporting it as runna
 ## Editor features
 
 - Load/save source files
-- Multiple compile targets: VIC-20 (first version), Commodore 64, Commodore 128 40 column, Commodore 128 80 column
+- Multiple compile targets: VIC-20 (first version), Commodore 64, Commodore 128 40 columns, Commodore 128 80 columns
 - Export runnable code
 - Export .bas file
 
@@ -21,5 +21,5 @@ A simple text editor for editing Commodore BASIC code, and exporting it as runna
 - Check that exported code lines not are longer than the maximum length
   - VIC-20: 88 characters
   - Commodore 64: 80 characters
-  - Commodore 128 160 characters
-- Syntax highliting
+  - Commodore 128: 160 characters
+- Syntax highliting (perhaps not in first version)
