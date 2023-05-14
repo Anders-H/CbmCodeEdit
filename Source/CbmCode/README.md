@@ -5,7 +5,7 @@ A simple text editor for editing Commodore BASIC code, and exporting it as runna
 ## Editor features
 
 - Load/save source files
-- Multiple compile targets: VIC-20 (first version), Commodore 64, Commodore 128 40 column, Commodore 128 80 column
+- Multiple compile targets: VIC-20 (first virsion), Commodore 64, Commodore 128 40 column, Commodore 128 80 column
 - Export runnable code
 - Export .bas file
 
@@ -13,7 +13,6 @@ A simple text editor for editing Commodore BASIC code, and exporting it as runna
 
 - Labels instead och line numbers
 - Long variable names
-- Constant values
 
 ## Other features
 
