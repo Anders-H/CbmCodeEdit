@@ -84,7 +84,7 @@ namespace CbmCode
 
             Cursor = Cursors.WaitCursor;
 
-            var generatedCode = new Generate(rtbIn.Text.Split()).Do();
+            var generatedCode = new Generate(rtbIn.Text.SplitLines()).Do();
 
             if (!generatedCode.success)
             {

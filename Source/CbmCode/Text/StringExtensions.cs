@@ -18,7 +18,7 @@ namespace CbmCode.Text
             return s.ToString();
         }
 
-        public static string[] Split(this string me)
+        public static string[] SplitLines(this string me)
         {
             return me.Split('\n', '\r');
         }
