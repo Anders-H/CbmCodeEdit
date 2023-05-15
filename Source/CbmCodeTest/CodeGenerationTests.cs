@@ -11,8 +11,8 @@ namespace CbmCodeTest
         public void RemovesComments()
         {
             var expected = A(
-"1 print \"hello \";",
-"2 print \"world\"");
+"0 print \"hello \";",
+"1 print \"world\"");
 
             var source = SA(
 @"//this is a comment
@@ -29,9 +29,9 @@ namespace CbmCodeTest
         public void SubstitutesVariables()
         {
             var expected = A(
-"1 print \"we're substitutin' variables here mate!\"",
-"2 input \"give me a sum and a message\"; A, A$",
-"3 A% = 42");
+"0 print \"we're substitutin' variables here mate!\"",
+"1 input \"give me a sum and a message\"; A, A$",
+"2 A% = 42");
 
             var source = SA(
 @"print ""we're substitutin' variables here mate!""
@@ -49,8 +49,8 @@ namespace CbmCodeTest
         public void SubstitutesLabels()
         {
             var expected = A(
-"1 input \"enter a number\"; X",
-"2 if X > 42 then 1");
+"0 input \"enter a number\"; X",
+"1 if X > 42 then 0");
 
             var source = SA(
 @"
@@ -67,8 +67,8 @@ namespace CbmCodeTest
         public void LabelsCanBeDelimitedByTabs()
         {
             var expected = A(
-"1 input \"enter a number\"; X",
-"2 if X > 42 then 1");
+"0 input \"enter a number\"; X",
+"1 if X > 42 then 0");
 
             var source = SA(
 @"
@@ -84,7 +84,7 @@ namespace CbmCodeTest
         [TestMethod]
         public void InlineConstants()
         {
-            var expected = A("1 let X = 3.14 * 3 + 2.7");
+            var expected = A("0 let X = 3.14 * 3 + 2.7");
             var source = SA(
 @"@constants: PI = 3.14, E = 2.7
 let X = PI * 3 + E");

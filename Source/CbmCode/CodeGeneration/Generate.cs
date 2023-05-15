@@ -206,5 +206,39 @@ namespace CbmCode.CodeGeneration
             }
             return withConstantInlining;
         }
+
+        List<string> SubstituteLabelsLineNumbers(List<string> lines)
+        {
+            //identify lines with label declarations and add line numbers:
+            var labelToLineNumber = new Dictionary<string, string>();
+            var lineNumber = 0;
+            var withLineNumbers = new List<string>();
+            foreach (var line in lines)
+            {
+                var newLine = line;
+                if (newLine.StartsWith(":"))
+                {
+                    var labelEnd = newLine.TakeWhile(c => !char.IsWhiteSpace(c)).Count();
+                    var label = newLine.Substring(1, labelEnd).Trim();
+                    newLine = newLine.Substring(labelEnd).Trim();
+                    labelToLineNumber.Add(label, lineNumber.ToString());
+                }
+
+                withLineNumbers.Add($"{lineNumber} {newLine}");
+                lineNumber++;
+            }
+
+            //replace all occurences of given labels with their corresponding line number:
+            var sansLabels = new List<string>();
+            foreach (var line in withLineNumbers)
+            {
+                var newLine = line;
+                foreach (var ltl in labelToLineNumber)
+                    newLine = newLine.Replace(ltl.Key, ltl.Value);
+                sansLabels.Add(newLine);
+            }
+
+            return sansLabels;
+        }
     }
 }
