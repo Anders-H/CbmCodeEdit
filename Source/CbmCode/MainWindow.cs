@@ -1,9 +1,10 @@
-﻿using System;
-using System.Windows.Forms;
-using CbmCode.CodeGeneration;
+﻿using CbmCode.CodeGeneration;
 using CbmCode.Gui;
 using CbmCode.Io;
 using CbmCode.Text;
+using System;
+using System.Linq;
+using System.Windows.Forms;
 
 namespace CbmCode
 {
@@ -84,30 +85,32 @@ namespace CbmCode
 
             Cursor = Cursors.WaitCursor;
 
-            var generatedCode = new Generate(rtbIn.Text.SplitLines()).Do();
+            var generatedCodeGenerations = new Generate(rtbIn.Text.SplitLines()).Do();
 
-            if (!generatedCode.success)
+            if (!generatedCodeGenerations.success)
             {
                 rtbOut.Text = "";
                 MessageDisplayer.Error(this, @"Code generation failed.");
                 return;
             }
 
-            if (generatedCode.generatedLines.Count <= 0)
+            var generatedLines = generatedCodeGenerations.generatedLines.Last();
+
+            if (generatedLines.Count <= 0)
             {
                 rtbOut.Text = "";
-                MessageDisplayer.Information(this, @"Code generation did nog give any result.");
+                MessageDisplayer.Information(this, @"Code generation did not give any result.");
             }
 
             if (rightPaneToolStripMenuItem.Checked)
             {
-                rtbOut.Text = generatedCode.generatedLines.Join();
+                rtbOut.Text = generatedLines.Join();
                 Cursor = Cursors.Default;
             }
             else if (clipboardToolStripMenuItem.Checked)
             {
-                Clipboard.SetText(generatedCode.generatedLines.Join());
-                MessageDisplayer.Information(this, $@"{generatedCode.generatedLines.Count} lines of code copied.");
+                Clipboard.SetText(generatedLines.Join());
+                MessageDisplayer.Information(this, $@"{generatedLines.Count} lines of code copied.");
             }
             else if (fileToolStripMenuItem1.Checked)
             {
@@ -119,7 +122,7 @@ namespace CbmCode
 
                     try
                     {
-                        Storage.SaveFile(x.FileName, generatedCode.generatedLines);
+                        Storage.SaveFile(x.FileName, generatedLines);
                     }
                     catch (Exception exception)
                     {

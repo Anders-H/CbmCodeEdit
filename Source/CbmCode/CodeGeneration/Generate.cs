@@ -12,7 +12,7 @@ namespace CbmCode.CodeGeneration
             _sourceLines = sourceLines;
         }
 
-        public (bool success, List<string> generatedLines) Do()
+        public (bool success, List<List<string>> generatedLines) Do()
         {
             List<string> cleanedLines = RemoveComments(_sourceLines);
             var (success, withSubstitutedVariables) = SubstituteVariables(cleanedLines);
@@ -21,10 +21,17 @@ namespace CbmCode.CodeGeneration
                 List<string> withoutCompoundAssignment = SubstituteCompoundAssignment(withSubstitutedVariables);
                 List<string> withInlinedConstants = InlineConstants(withoutCompoundAssignment);
                 var withSubstitutedLabels = SubstituteLabelsLineNumbers(withInlinedConstants);
-                return (true, withSubstitutedLabels);
+                return (true, L(_sourceLines.ToList(),
+                    cleanedLines,
+                    withSubstitutedVariables,
+                    withoutCompoundAssignment,
+                    withInlinedConstants,
+                    withSubstitutedLabels));
             }
             else
                 return (false, null);
+
+            List<T> L<T>(params T[] args) => args.ToList();
         }
 
         List<string> RemoveComments(string[] lines)

@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.Linq;
 using CbmCode.CodeGeneration;
 
 namespace CbmCodeTest
@@ -22,7 +23,7 @@ namespace CbmCodeTest
             var generate = new Generate(source);
             var (success, generatedLines) = generate.Do();
             Assert.IsTrue(success);
-            CollectionAssert.AreEqual(expected, generatedLines);
+            CollectionAssert.AreEqual(expected, generatedLines.Last());
         }
 
         [TestMethod]
@@ -42,7 +43,28 @@ namespace CbmCodeTest
             var generate = new Generate(source);
             var (success, generatedLines) = generate.Do();
             Assert.IsTrue(success);
-            CollectionAssert.AreEqual(expected, generatedLines);
+            CollectionAssert.AreEqual(expected, generatedLines.Last());
+        }
+
+        [TestMethod]
+        public void SubstituteOneVariable()
+        {
+            var expected = A(
+"0 print \"we start here!\"",
+"1 A = A + 1",
+"2 goto 0");
+
+            var source = SA(
+@"@variables: counter
+:loop   print ""we start here!""
+        counter += 1
+        goto loop
+");
+
+            var generate = new Generate(source);
+            var (success, generatedLines) = generate.Do();
+            Assert.IsTrue(success);
+            CollectionAssert.AreEqual(expected, generatedLines.Last());
         }
 
         [TestMethod]
@@ -60,7 +82,7 @@ namespace CbmCodeTest
             var generate = new Generate(source);
             var (success, generatedLines) = generate.Do();
             Assert.IsTrue(success);
-            CollectionAssert.AreEqual(expected, generatedLines);
+            CollectionAssert.AreEqual(expected, generatedLines.Last());
         }
 
         [TestMethod]
@@ -78,7 +100,7 @@ namespace CbmCodeTest
             var generate = new Generate(source);
             var (success, generatedLines) = generate.Do();
             Assert.IsTrue(success);
-            CollectionAssert.AreEqual(expected, generatedLines);
+            CollectionAssert.AreEqual(expected, generatedLines.Last());
         }
 
         [TestMethod]
@@ -92,7 +114,7 @@ let X = PI * 3 + E");
             var generate = new Generate(source);
             var (success, generatedLines) = generate.Do();
             Assert.IsTrue(success);
-            CollectionAssert.AreEqual(expected, generatedLines);
+            CollectionAssert.AreEqual(expected, generatedLines.Last());
         }
 
         [TestMethod]
@@ -104,7 +126,7 @@ let X = PI * 3 + E");
             var generate = new Generate(source);
             var (success, generatedLines) = generate.Do();
             Assert.IsTrue(success);
-            CollectionAssert.AreEqual(expected, generatedLines);
+            CollectionAssert.AreEqual(expected, generatedLines.Last());
         }
 
         [TestMethod]
