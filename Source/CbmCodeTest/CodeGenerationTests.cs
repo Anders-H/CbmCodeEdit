@@ -107,8 +107,6 @@ let X = PI * 3 + E");
             CollectionAssert.AreEqual(expected, generatedLines);
         }
 
-
-
         [TestMethod]
 
         string[] SA(string source) =>
