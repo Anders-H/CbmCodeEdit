@@ -49,6 +49,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CodeGeneration\Generate.cs" />
     <Compile Include="Gui\OpenSaveDialogs.cs" />
     <Compile Include="Io\Storage.cs" />
     <Compile Include="MainWindow.cs">
