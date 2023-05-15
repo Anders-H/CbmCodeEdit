@@ -64,6 +64,24 @@ namespace CbmCodeTest
         }
 
         [TestMethod]
+        public void LabelsCanBeDelimitedByTabs()
+        {
+            var expected = A(
+"1 input \"enter a number\"; X",
+"2 if X > 42 then 1");
+
+            var source = SA(
+@"
+:loop	input ""enter a number""; X
+		if X > 42 then loop");
+
+            var generate = new Generate(source);
+            var (success, generatedLines) = generate.Do();
+            Assert.IsTrue(success);
+            CollectionAssert.AreEqual(expected, generatedLines);
+        }
+
+        [TestMethod]
         public void InlineConstants()
         {
             var expected = A("1 let X = 3.14 * 3 + 2.7");

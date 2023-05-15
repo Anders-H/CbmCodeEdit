@@ -150,7 +150,7 @@ namespace CbmCode.CodeGeneration
                 var newLine = line;
                 if (newLine.StartsWith(":"))
                 {
-                    var labelEnd = newLine.IndexOf(' ');
+                    var labelEnd = newLine.TakeWhile(c => !char.IsWhiteSpace(c)).Count();
                     var label = newLine.Substring(1, labelEnd).Trim();
                     newLine = newLine.Substring(labelEnd).Trim();
                     labelToLineNumber.Add(label, lineNumber.ToString());
