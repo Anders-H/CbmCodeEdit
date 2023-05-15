@@ -1,9 +1,9 @@
 ﻿using System;
-using System.Text;
 using System.Windows.Forms;
 using CbmCode.CodeGeneration;
 using CbmCode.Gui;
 using CbmCode.Io;
+using CbmCode.Text;
 
 namespace CbmCode
 {
@@ -24,11 +24,8 @@ namespace CbmCode
 
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (_dirtyFlag)
-            {
-                if (MessageBox.Show(@"You have unsaved changes. Continue?", @"Open", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) != DialogResult.Yes)
-                    return;
-            }
+            if (_dirtyFlag && !MessageDisplayer.Ask(this, @"You have unsaved changes. Continue?", @"Open"))
+                return;
 
             using (var x = OpenSaveDialogs.GetOpenDialog())
             {
@@ -52,8 +49,7 @@ namespace CbmCode
             }
             catch (Exception e)
             {
-                Cursor = Cursors.Default;
-                MessageBox.Show($@"Load failed: {e.Message}", Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageDisplayer.Error(this, $@"Load failed: {e.Message}");
             }
         }
 
@@ -88,45 +84,30 @@ namespace CbmCode
 
             Cursor = Cursors.WaitCursor;
 
-            var code = rtbIn.Text.Split('\n', '\r');
-
-            var generatedCode = new Generate(code).Do();
+            var generatedCode = new Generate(rtbIn.Text.Split()).Do();
 
             if (!generatedCode.success)
             {
                 rtbOut.Text = "";
-                Cursor = Cursors.Default;
-                MessageBox.Show(@"Code generation failed.", Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageDisplayer.Error(this, @"Code generation failed.");
                 return;
             }
 
             if (generatedCode.generatedLines.Count <= 0)
             {
                 rtbOut.Text = "";
-                Cursor = Cursors.Default;
-                MessageBox.Show(@"Code generation did nog give any result.", Text, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageDisplayer.Information(this, @"Code generation did nog give any result.");
             }
 
             if (rightPaneToolStripMenuItem.Checked)
             {
-                var s = new StringBuilder();
-
-                foreach (var generatedCodeGeneratedLine in generatedCode.generatedLines)
-                    s.AppendLine(generatedCodeGeneratedLine);
-
-                rtbOut.Text = s.ToString();
+                rtbOut.Text = generatedCode.generatedLines.Join();
                 Cursor = Cursors.Default;
             }
             else if (clipboardToolStripMenuItem.Checked)
             {
-                var s = new StringBuilder();
-
-                foreach (var generatedCodeGeneratedLine in generatedCode.generatedLines)
-                    s.AppendLine(generatedCodeGeneratedLine);
-
-                Clipboard.SetText(s.ToString());
-                Cursor = Cursors.Default;
-                MessageBox.Show($@"{generatedCode.generatedLines.Count} lines of code copied.", Text, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Clipboard.SetText(generatedCode.generatedLines.Join());
+                MessageDisplayer.Information(this, $@"{generatedCode.generatedLines.Count} lines of code copied.");
             }
             else if (fileToolStripMenuItem1.Checked)
             {
@@ -142,41 +123,26 @@ namespace CbmCode
                     }
                     catch (Exception exception)
                     {
-                        MessageBox.Show($@"Save failed: {exception.Message}", Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageDisplayer.Error(this, $@"Save failed: {exception.Message}");
                     }
                 }
             }
             Cursor = Cursors.Default;
         }
 
-        private void clipboardToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            clipboardToolStripMenuItem.Checked = true;
-            rightPaneToolStripMenuItem.Checked = false;
-            fileToolStripMenuItem1.Checked = false;
-        }
+        private void clipboardToolStripMenuItem_Click(object sender, EventArgs e) =>
+            ControlHelper.RadioCheckItems(0, clipboardToolStripMenuItem, rightPaneToolStripMenuItem, fileToolStripMenuItem1);
 
-        private void rightPaneToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            clipboardToolStripMenuItem.Checked = false;
-            rightPaneToolStripMenuItem.Checked = true;
-            fileToolStripMenuItem1.Checked = false;
-        }
-
-        private void fileToolStripMenuItem1_Click(object sender, EventArgs e)
-        {
-            clipboardToolStripMenuItem.Checked = false;
-            rightPaneToolStripMenuItem.Checked = false;
-            fileToolStripMenuItem1.Checked = true;
-        }
+        private void rightPaneToolStripMenuItem_Click(object sender, EventArgs e) =>
+            ControlHelper.RadioCheckItems(1, clipboardToolStripMenuItem, rightPaneToolStripMenuItem, fileToolStripMenuItem1);
+        
+        private void fileToolStripMenuItem1_Click(object sender, EventArgs e) =>
+            ControlHelper.RadioCheckItems(2, clipboardToolStripMenuItem, rightPaneToolStripMenuItem, fileToolStripMenuItem1);
 
         private void newToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (_dirtyFlag)
-            {
-                if (MessageBox.Show(@"You have unsaved changes. Continue?", @"New", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) != DialogResult.Yes)
-                    return;
-            }
+            if (_dirtyFlag && !MessageDisplayer.Ask(this, @"You have unsaved changes. Continue?", @"New"))
+                return;
 
             rtbIn.Text = "";
             rtbOut.Text = "";
@@ -184,18 +150,13 @@ namespace CbmCode
             PushCurrentFile("");
         }
 
-        private void rtbIn_TextChanged(object sender, EventArgs e)
-        {
+        private void rtbIn_TextChanged(object sender, EventArgs e) =>
             _dirtyFlag = true;
-        }
 
         private void MainWindow_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (_dirtyFlag && e.CloseReason == CloseReason.UserClosing)
-            {
-                if (MessageBox.Show(@"You have unsaved changes. Quit?", @"Quit", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) != DialogResult.Yes)
-                    e.Cancel = true;
-            }
+            if (_dirtyFlag && e.CloseReason == CloseReason.UserClosing && MessageDisplayer.Ask(this, @"You have unsaved changes. Quit?", @"Quit"))
+                e.Cancel = true;
         }
 
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
@@ -221,6 +182,7 @@ namespace CbmCode
         private void Save(string filename)
         {
             Cursor = Cursors.WaitCursor;
+
             try
             {
                 Storage.SaveFile(filename, rtbIn.Text);
@@ -230,8 +192,7 @@ namespace CbmCode
             }
             catch (Exception e)
             {
-                Cursor = Cursors.Default;
-                MessageBox.Show($@"Save failed: {e.Message}", Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageDisplayer.Error(this, $@"Save failed: {e.Message}");
             }
         }
     }
