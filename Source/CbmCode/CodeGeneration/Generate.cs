@@ -12,7 +12,7 @@ namespace CbmCode.CodeGeneration
             _sourceLines = sourceLines;
         }
 
-        public (bool success, List<List<string>> generatedLines) Do()
+        public (bool success, List<List<string>> codeGenerations) Do()
         {
             List<string> cleanedLines = RemoveComments(_sourceLines);
             var (success, withSubstitutedVariables) = SubstituteVariables(cleanedLines);

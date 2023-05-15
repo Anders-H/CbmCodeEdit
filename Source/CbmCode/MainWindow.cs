@@ -85,16 +85,16 @@ namespace CbmCode
 
             Cursor = Cursors.WaitCursor;
 
-            var generatedCodeGenerations = new Generate(rtbIn.Text.SplitLines()).Do();
+            var generatedCode = new Generate(rtbIn.Text.SplitLines()).Do();
 
-            if (!generatedCodeGenerations.success)
+            if (!generatedCode.success)
             {
                 rtbOut.Text = "";
                 MessageDisplayer.Error(this, @"Code generation failed.");
                 return;
             }
 
-            var generatedLines = generatedCodeGenerations.generatedLines.Last();
+            var generatedLines = generatedCode.codeGenerations.Last();
 
             if (generatedLines.Count <= 0)
             {
