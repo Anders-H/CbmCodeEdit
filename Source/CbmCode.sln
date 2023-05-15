@@ -5,6 +5,8 @@ VisualStudioVersion = 17.5.33627.172
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CbmCode", "CbmCode\CbmCode.csproj", "{46AC55CA-7BCA-4884-9A9F-631FA9AD6C03}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CbmCodeTest", "CbmCodeTest\CbmCodeTest.csproj", "{E124DB85-13A6-48CF-A64C-71E261F4A6CD}"
+EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{099E5D87-2F24-4442-94CF-24B374372D24}"
 	ProjectSection(SolutionItems) = preProject
 		..\README.md = ..\README.md
@@ -20,6 +22,10 @@ Global
 		{46AC55CA-7BCA-4884-9A9F-631FA9AD6C03}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{46AC55CA-7BCA-4884-9A9F-631FA9AD6C03}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{46AC55CA-7BCA-4884-9A9F-631FA9AD6C03}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E124DB85-13A6-48CF-A64C-71E261F4A6CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E124DB85-13A6-48CF-A64C-71E261F4A6CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E124DB85-13A6-48CF-A64C-71E261F4A6CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E124DB85-13A6-48CF-A64C-71E261F4A6CD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

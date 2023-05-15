@@ -11,7 +11,7 @@ A simple text editor for editing Commodore BASIC code, and exporting it as runna
 
 ## Language extensions
 
-- Labels instead och line numbers
+- Labels instead of line numbers
 - Long variable names
 - Constant values
 
