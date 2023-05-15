@@ -7,7 +7,7 @@ namespace CbmCode.Gui
         public static bool Ask(Form owner, string text, string title)
         {
             owner.Cursor = Cursors.Default;
-            return MessageBox.Show(owner, text, title, MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) == DialogResult.OK;
+            return MessageBox.Show(owner, text, title, MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) == DialogResult.Yes;
         }
 
         public static void Information(Form owner, string text)

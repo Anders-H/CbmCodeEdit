@@ -195,5 +195,14 @@ namespace CbmCode
                 MessageDisplayer.Error(this, $@"Save failed: {e.Message}");
             }
         }
+
+        private void btnNew_Click(object sender, EventArgs e) =>
+            newToolStripMenuItem_Click(sender, e);
+
+        private void btnOpen_Click(object sender, EventArgs e) =>
+            openToolStripMenuItem_Click(sender, e);
+
+        private void btnSave_Click(object sender, EventArgs e) =>
+            saveToolStripMenuItem_Click(sender, e);
     }
 }
