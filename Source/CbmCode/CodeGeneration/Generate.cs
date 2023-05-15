@@ -19,8 +19,9 @@ namespace CbmCode.CodeGeneration
             var (success, withSubstitutedVariables) = SubstituteVariables(cleanedLines);
             if (success)
             {
-                List<string> withInlinedConstants = InlineConstants(withSubstitutedVariables);
-                var withSubstitutedLabels = SubstituteLabels(withInlinedConstants);
+                List<string> withoutCompoundAssignment = SubstituteCompoundAssignment(withSubstitutedVariables);
+                List<string> withInlinedConstants = InlineConstants(withoutCompoundAssignment);
+                var withSubstitutedLabels = SubstituteLabelsLineNumbers(withInlinedConstants);
                 return (true, withSubstitutedLabels);
             }
             else
@@ -139,38 +140,91 @@ namespace CbmCode.CodeGeneration
             return result.ToArray();
         }
 
-        List<string> SubstituteLabels(List<string> lines)
+        List<string> SubstituteCompoundAssignment(List<string> lines)
         {
-            //identify lines with label declarations and add line numbers:
-            var labelToLineNumber = new Dictionary<string, string>();
-            var lineNumber = 1;
-            var withLineNumbers = new List<string>();
+            /* This:
+             * x += 42
+             * Becomes:
+             * x = x + 42
+             */
+            var result = new List<string>();
+
             foreach (var line in lines)
             {
-                var newLine = line;
-                if (newLine.StartsWith(":"))
+                var indices = new List<int>();
+                var index = line.IndexOf('=');
+                while (index >= 0)
                 {
-                    var labelEnd = newLine.TakeWhile(c => !char.IsWhiteSpace(c)).Count();
-                    var label = newLine.Substring(1, labelEnd).Trim();
-                    newLine = newLine.Substring(labelEnd).Trim();
-                    labelToLineNumber.Add(label, lineNumber.ToString());
+                    indices.Add(index);
+                    if (index < line.Length)
+                        index = line.IndexOf('=', index + 1);
+                    else
+                        break;
                 }
 
-                withLineNumbers.Add($"{lineNumber} {newLine}");
-                lineNumber++;
-            }
+                if (indices.Count > 0 && indices[0] == 0)
+                    indices = indices.GetRange(1, indices.Count - 1);
 
-            //replace all occurences of given labels with their corresponding line number:
-            var sansLabels = new List<string>();
-            foreach (var line in withLineNumbers)
-            {
+                var substitutionPairs = new List<(string oldExpression, string newExpression)>();
+                foreach (var assignmentIndex in indices)
+                {
+                    int beforeEqualSign = assignmentIndex - 1;
+                    var variable = string.Empty;
+                    var op = string.Empty;
+                    var compoundAssignment = "=";
+                    var state = 0;
+                    if (!char.IsWhiteSpace(line[beforeEqualSign]))
+                    {//It's a compound assignment!
+                        for (int i = beforeEqualSign; i >= 0; i--)
+                        {
+                            var cc = line[i];
+                            compoundAssignment += cc;
+                            if (state == 0)//operator state
+                            {
+                                if (char.IsWhiteSpace(cc))
+                                    state++;
+                                else
+                                    op += cc;
+                            }
+                            else if (state == 1)//intermediare whitespace state
+                            {
+                                if (!char.IsWhiteSpace(cc))
+                                {
+                                    variable += cc;
+                                    state++;
+                                }
+                                else
+                                    continue;
+                            }
+                            else//variable state
+                            {
+                                if (char.IsWhiteSpace(cc))
+                                    break;
+                                variable += cc;
+                            }
+                        }
+                        variable = Reverse(variable);
+                        op = Reverse(op);
+                        compoundAssignment = Reverse(compoundAssignment.Trim());
+                        var newExpression = $"{variable} = {variable} {op}";
+                        substitutionPairs.Add((compoundAssignment, newExpression));
+                    }
+                }
+                substitutionPairs.Reverse();
                 var newLine = line;
-                foreach (var ltl in labelToLineNumber)
-                    newLine = newLine.Replace(ltl.Key, ltl.Value);
-                sansLabels.Add(newLine);
+                foreach (var (oldExpr, newExpr) in substitutionPairs)
+                    newLine = newLine.Replace(oldExpr, newExpr);
+                result.Add(newLine);
             }
 
-            return sansLabels;
+            return result;
+        }
+
+        private static string Reverse(string value)
+        {
+            var charArray = value.ToCharArray();
+            Array.Reverse(charArray);
+            return new string(charArray);
         }
 
         List<string> InlineConstants(List<string> lines)

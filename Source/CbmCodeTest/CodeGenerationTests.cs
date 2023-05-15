@@ -95,6 +95,22 @@ let X = PI * 3 + E");
             CollectionAssert.AreEqual(expected, generatedLines);
         }
 
+        [TestMethod]
+        public void CompoundAssignment()
+        {
+            var expected = A("0 var = var + 42");
+            var source = A("var += 42");
+
+            var generate = new Generate(source);
+            var (success, generatedLines) = generate.Do();
+            Assert.IsTrue(success);
+            CollectionAssert.AreEqual(expected, generatedLines);
+        }
+
+
+
+        [TestMethod]
+
         string[] SA(string source) =>
             source.Split(A(Environment.NewLine), StringSplitOptions.None);
 
