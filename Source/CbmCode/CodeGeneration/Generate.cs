@@ -279,8 +279,19 @@ namespace CbmCode.CodeGeneration
                 if (newLine.StartsWith(":"))
                 {
                     var labelEnd = newLine.TakeWhile(c => !char.IsWhiteSpace(c)).Count();
-                    var label = newLine.Substring(1, labelEnd).Trim();
-                    newLine = newLine.Substring(labelEnd).Trim();
+                    string label;
+                    if (labelEnd < newLine.Length)
+                    {
+                        label = newLine.Substring(1, labelEnd).Trim();
+                        newLine = newLine.Substring(labelEnd).Trim();
+                    }
+                    else if (labelEnd > 1)
+                    {
+                        label = newLine.Substring(1);
+                        newLine = "rem";
+                    }
+                    else
+                        throw new ArgumentException("Let's cross this particular bridge when we get to it");
                     labelToLineNumber.Add(label, lineNumber.ToString());
                 }
 

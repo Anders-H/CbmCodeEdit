@@ -20,10 +20,7 @@ namespace CbmCodeTest
     print ""hello "";//so is this
     print ""world""     //as well as this
 ");
-            var generate = new Generate(source);
-            var (success, generations) = generate.Do();
-            Assert.IsTrue(success);
-            CollectionAssert.AreEqual(expected, generations.Last());
+            Test(expected, source);
         }
 
         [TestMethod]
@@ -40,10 +37,7 @@ namespace CbmCodeTest
     input ""give me a sum and a message""; _sum, message$//I wrote _sum to protect sum from being replaced.
     count% = 42");
 
-            var generate = new Generate(source);
-            var (success, generations) = generate.Do();
-            Assert.IsTrue(success);
-            CollectionAssert.AreEqual(expected, generations.Last());
+            Test(expected, source);
         }
 
         [TestMethod]
@@ -58,10 +52,7 @@ namespace CbmCodeTest
 :loop input ""enter a number""; X
       if X > 42 then loop");
 
-            var generate = new Generate(source);
-            var (success, generations) = generate.Do();
-            Assert.IsTrue(success);
-            CollectionAssert.AreEqual(expected, generations.Last());
+            Test(expected, source);
         }
 
         [TestMethod]
@@ -76,10 +67,7 @@ namespace CbmCodeTest
 :loop	input ""enter a number""; X
 		if X > 42 then loop");
 
-            var generate = new Generate(source);
-            var (success, generations) = generate.Do();
-            Assert.IsTrue(success);
-            CollectionAssert.AreEqual(expected, generations.Last());
+            Test(expected, source);
         }
 
         [TestMethod]
@@ -90,10 +78,7 @@ namespace CbmCodeTest
 @"@constants: PI = 3.14, E = 2.7
 let X = PI * 3 + E");
 
-            var generate = new Generate(source);
-            var (success, generations) = generate.Do();
-            Assert.IsTrue(success);
-            CollectionAssert.AreEqual(expected, generations.Last());
+            Test(expected, source);
         }
 
         [TestMethod]
@@ -101,14 +86,29 @@ let X = PI * 3 + E");
         {
             var expected = A("0 var = var + 42");
             var source = A("var += 42");
+            Test(expected, source);
+        }
 
-            var generate = new Generate(source);
+        [TestMethod]
+        public void LabelCanStandOnItsOwn()
+        {
+            var expected = A(
+"0 rem",
+"1 goto 0");
+            var source = SA(
+@":start
+goto start");
+
+            Test(expected, source);
+        }
+
+        static void Test(string[] expected, string[] actual)
+        {
+            var generate = new Generate(actual);
             var (success, generations) = generate.Do();
             Assert.IsTrue(success);
             CollectionAssert.AreEqual(expected, generations.Last());
         }
-
-        [TestMethod]
 
         string[] SA(string source) =>
             source.Split(A(Environment.NewLine), StringSplitOptions.None);
