@@ -1,6 +1,6 @@
 # Commodore BASIC Code Editor
 
-A simple text editor for editing Commodore BASIC code, and exporting it as runnable source code.
+A simple text editor for editing enhansed Commodore BASIC code, and exporting it as runnable source code.
 
 ## Editor features
 
