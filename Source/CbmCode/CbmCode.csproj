@@ -91,6 +91,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="icon.ico" />
+    <None Include="Resources\112_ArrowReturnRight_Blue_16x16_72.png" />
+    <None Include="Resources\112_ArrowReturnLeft_Blue_16x16_72.png" />
+    <None Include="Resources\PlayHS.png" />
     <None Include="Resources\saveHS.png" />
     <None Include="Resources\openHS.png" />
     <None Include="Resources\NewDocumentHS.png" />
