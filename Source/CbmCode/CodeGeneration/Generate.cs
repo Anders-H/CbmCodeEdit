@@ -148,11 +148,6 @@ namespace CbmCode.CodeGeneration
 
         List<string> SubstituteCompoundAssignment(List<string> lines)
         {
-            /* This:
-             * x += 42
-             * Becomes:
-             * x = x + 42
-             */
             var result = new List<string>();
 
             foreach (var line in lines)
@@ -174,47 +169,56 @@ namespace CbmCode.CodeGeneration
                 var substitutionPairs = new List<(string oldExpression, string newExpression)>();
                 foreach (var assignmentIndex in indices)
                 {
-                    int beforeEqualSign = assignmentIndex - 1;
+                    var beforeEqualSign = assignmentIndex - 1;
+                    var ccBeforeEqualSign = line[beforeEqualSign];
                     var variable = string.Empty;
                     var op = string.Empty;
                     var compoundAssignment = "=";
                     var state = 0;
-                    if (!char.IsWhiteSpace(line[beforeEqualSign]))
-                    {//It's a compound assignment!
-                        for (int i = beforeEqualSign; i >= 0; i--)
+                    if (char.IsWhiteSpace(ccBeforeEqualSign))
+                        continue;
+                    //Note: As 'AND' and 'OR' end with 'D' and 'R', "dDrR" covers both.
+                    if (char.IsLetter(ccBeforeEqualSign) && !"dDrR".Contains(ccBeforeEqualSign))
+                        continue;
+                    //It's a compound assignment!
+                    for (int i = beforeEqualSign; i >= 0; i--)
+                    {
+                        var cc = line[i];
+                        compoundAssignment += cc;
+                        if (state == 0)//operator state
                         {
-                            var cc = line[i];
-                            compoundAssignment += cc;
-                            if (state == 0)//operator state
-                            {
-                                if (char.IsWhiteSpace(cc))
-                                    state++;
-                                else
-                                    op += cc;
-                            }
-                            else if (state == 1)//intermediare whitespace state
-                            {
-                                if (!char.IsWhiteSpace(cc))
-                                {
-                                    variable += cc;
-                                    state++;
-                                }
-                                else
-                                    continue;
-                            }
-                            else//variable state
-                            {
-                                if (char.IsWhiteSpace(cc))
-                                    break;
-                                variable += cc;
-                            }
+                            if (char.IsWhiteSpace(cc))
+                                state++;
+                            else
+                                op += cc;
                         }
-                        variable = Reverse(variable);
-                        op = Reverse(op);
-                        compoundAssignment = Reverse(compoundAssignment.Trim());
-                        var newExpression = $"{variable} = {variable} {op}";
-                        substitutionPairs.Add((compoundAssignment, newExpression));
+                        else if (state == 1)//intermediare whitespace state
+                        {
+                            if (!char.IsWhiteSpace(cc))
+                            {
+                                variable += cc;
+                                state++;
+                            }
+                            else
+                                continue;
+                        }
+                        else//variable state
+                        {
+                            if (char.IsWhiteSpace(cc))
+                                break;
+                            variable += cc;
+                        }
                     }
+                    variable = Reverse(variable).ToUpper();
+                    op = Reverse(op).ToUpper();
+
+                    //Note: If the presumed operator is neither 'AND' or "OR" then continue.
+                    if ("dDrR".Contains(ccBeforeEqualSign) && (op != "AND" && op != "OR"))
+                        continue;
+
+                    compoundAssignment = Reverse(compoundAssignment.Trim());
+                    var newExpression = $"{variable} = {variable} {op}";
+                    substitutionPairs.Add((compoundAssignment, newExpression));
                 }
                 substitutionPairs.Reverse();
                 var newLine = line;

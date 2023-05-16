@@ -84,8 +84,12 @@ let X = PI * 3 + E");
         [TestMethod]
         public void CompoundAssignment()
         {
-            var expected = A("0 var = var + 42");
+            var expected = A("0 VAR = VAR + 42");
             var source = A("var += 42");
+            Test(expected, source);
+
+            expected = A("0 VAR = VAR AND 42");
+            source = A("var and= 42");
             Test(expected, source);
         }
 
@@ -102,6 +106,27 @@ goto start");
             Test(expected, source);
         }
 
+        [TestMethod]
+        public void NotCompoundAssignment()
+        {
+            var expected = A("0 for A=1 to 10");
+            var source = SA(
+@"@variables: counter
+for counter=1 to 10");
+
+            Test(expected, source);
+
+            expected = A("0 for counter=1 to 10");
+            source = SA(@"for counter=1 to 10");
+            Test(expected, source);
+        }
+
+        T[] A<T>(params T[] args) =>
+            args;
+
+        string[] SA(string source) =>
+            source.Split(A(Environment.NewLine), StringSplitOptions.None);
+
         static void Test(string[] expected, string[] actual)
         {
             var generate = new Generate(actual);
@@ -109,11 +134,5 @@ goto start");
             Assert.IsTrue(success);
             CollectionAssert.AreEqual(expected, generations.Last());
         }
-
-        string[] SA(string source) =>
-            source.Split(A(Environment.NewLine), StringSplitOptions.None);
-
-        T[] A<T>(params T[] args) =>
-            args;
     }
 }
