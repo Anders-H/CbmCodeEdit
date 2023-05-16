@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.Linq;
 using CbmCode.CodeGeneration;
 
 namespace CbmCodeTest
@@ -20,9 +21,9 @@ namespace CbmCodeTest
     print ""world""     //as well as this
 ");
             var generate = new Generate(source);
-            var (success, generatedLines) = generate.Do();
+            var (success, generations) = generate.Do();
             Assert.IsTrue(success);
-            CollectionAssert.AreEqual(expected, generatedLines);
+            CollectionAssert.AreEqual(expected, generations.Last());
         }
 
         [TestMethod]
@@ -40,9 +41,9 @@ namespace CbmCodeTest
     count% = 42");
 
             var generate = new Generate(source);
-            var (success, generatedLines) = generate.Do();
+            var (success, generations) = generate.Do();
             Assert.IsTrue(success);
-            CollectionAssert.AreEqual(expected, generatedLines);
+            CollectionAssert.AreEqual(expected, generations.Last());
         }
 
         [TestMethod]
@@ -58,9 +59,9 @@ namespace CbmCodeTest
       if X > 42 then loop");
 
             var generate = new Generate(source);
-            var (success, generatedLines) = generate.Do();
+            var (success, generations) = generate.Do();
             Assert.IsTrue(success);
-            CollectionAssert.AreEqual(expected, generatedLines);
+            CollectionAssert.AreEqual(expected, generations.Last());
         }
 
         [TestMethod]
@@ -76,9 +77,9 @@ namespace CbmCodeTest
 		if X > 42 then loop");
 
             var generate = new Generate(source);
-            var (success, generatedLines) = generate.Do();
+            var (success, generations) = generate.Do();
             Assert.IsTrue(success);
-            CollectionAssert.AreEqual(expected, generatedLines);
+            CollectionAssert.AreEqual(expected, generations.Last());
         }
 
         [TestMethod]
@@ -90,9 +91,9 @@ namespace CbmCodeTest
 let X = PI * 3 + E");
 
             var generate = new Generate(source);
-            var (success, generatedLines) = generate.Do();
+            var (success, generations) = generate.Do();
             Assert.IsTrue(success);
-            CollectionAssert.AreEqual(expected, generatedLines);
+            CollectionAssert.AreEqual(expected, generations.Last());
         }
 
         [TestMethod]
@@ -102,9 +103,9 @@ let X = PI * 3 + E");
             var source = A("var += 42");
 
             var generate = new Generate(source);
-            var (success, generatedLines) = generate.Do();
+            var (success, generations) = generate.Do();
             Assert.IsTrue(success);
-            CollectionAssert.AreEqual(expected, generatedLines);
+            CollectionAssert.AreEqual(expected, generations.Last());
         }
 
         [TestMethod]
