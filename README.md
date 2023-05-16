@@ -22,3 +22,5 @@ A simple text editor for editing Commodore BASIC code, and exporting it as runna
   - VIC-20: 88 characters
   - Commodore 64: 80 characters
   - Commodore 128: 160 characters
+
+![Screenshot](https://raw.githubusercontent.com/Anders-H/CbmCodeEdit/main/screenshot.jpg)
