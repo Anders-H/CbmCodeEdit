@@ -119,6 +119,14 @@ for counter=1 to 10");
             expected = A("0 for counter=1 to 10");
             source = SA(@"for counter=1 to 10");
             Test(expected, source);
+
+            expected = A("0 for var%=1 to 10");
+            source = SA(@"for var%=1 to 10");
+            Test(expected, source);
+
+            expected = A("0 for var$=1 to 10");
+            source = SA(@"for var$=1 to 10");
+            Test(expected, source);
         }
 
         T[] A<T>(params T[] args) =>

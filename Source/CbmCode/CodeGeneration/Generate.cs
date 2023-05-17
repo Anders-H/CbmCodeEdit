@@ -177,10 +177,12 @@ namespace CbmCode.CodeGeneration
                     var state = 0;
                     if (char.IsWhiteSpace(ccBeforeEqualSign))
                         continue;
+                    if ("%$".Contains(ccBeforeEqualSign))
+                        continue;
                     //Note: As 'AND' and 'OR' end with 'D' and 'R', "dDrR" covers both.
                     if (char.IsLetter(ccBeforeEqualSign) && !"dDrR".Contains(ccBeforeEqualSign))
                         continue;
-                    //It's a compound assignment!
+                    //It's probably a compound assignment!
                     for (int i = beforeEqualSign; i >= 0; i--)
                     {
                         var cc = line[i];
@@ -212,7 +214,7 @@ namespace CbmCode.CodeGeneration
                     variable = Reverse(variable).ToUpper();
                     op = Reverse(op).ToUpper();
 
-                    //Note: If the presumed operator is neither 'AND' or "OR" then continue.
+                    //Note: If the presumed operator is neither 'AND' or "OR" then not a compound assignment.
                     if ("dDrR".Contains(ccBeforeEqualSign) && (op != "AND" && op != "OR"))
                         continue;
 
