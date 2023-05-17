@@ -3,6 +3,7 @@ using CbmCode.Gui;
 using CbmCode.Io;
 using CbmCode.Text;
 using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -207,5 +208,18 @@ namespace CbmCode
 
         private void btnSave_Click(object sender, EventArgs e) =>
             saveToolStripMenuItem_Click(sender, e);
+
+        private void openGithubToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                Process.Start("https://github.com/Anders-H/CbmCodeEdit");
+            }
+            catch (Exception exception)
+            {
+                MessageDisplayer.Error(this, $"Failed to open Github. {exception.Message}");
+            }
+            
+        }
     }
 }
