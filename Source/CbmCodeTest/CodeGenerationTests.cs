@@ -65,7 +65,7 @@ namespace CbmCodeTest
             var source = SA(
 @"
 :loop	input ""enter a number""; X
-		if X > 42 then loop");
+        if X > 42 then loop");
 
             Test(expected, source);
         }
