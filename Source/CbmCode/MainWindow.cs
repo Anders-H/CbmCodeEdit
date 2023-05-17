@@ -219,7 +219,9 @@ namespace CbmCode
             {
                 MessageDisplayer.Error(this, $"Failed to open Github. {exception.Message}");
             }
-            
         }
+
+        private void btnBuild_Click(object sender, EventArgs e) =>
+            buildToolStripMenuItem_Click(sender, e);
     }
 }

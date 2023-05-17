@@ -293,6 +293,7 @@
             this.btnBuild.Name = "btnBuild";
             this.btnBuild.Size = new System.Drawing.Size(23, 22);
             this.btnBuild.Text = "Build";
+            this.btnBuild.Click += new System.EventHandler(this.btnBuild_Click);
             // 
             // toolStripSeparator2
             // 
