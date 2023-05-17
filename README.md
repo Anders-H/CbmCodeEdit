@@ -60,19 +60,3 @@ goto loop
 1 print "hello world"
 2 goto 0
 ```
-
-### Global constants
-
-*Input:*
-
-```
-:loop print "hello world"
-goto loop
-```
-
-*Output:*
-
-```
-0 print "hello world"
-1 goto 0
-```
