@@ -56,7 +56,7 @@ goto loop
 *Output:*
 
 ```
-0 rem
+0 rem"loop
 1 print "hello world"
 2 goto 0
 ```

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace CbmCode.CodeGeneration
 {
@@ -294,7 +295,7 @@ namespace CbmCode.CodeGeneration
                     else if (labelEnd > 1)
                     {
                         label = newLine.Substring(1);
-                        newLine = "rem";
+                        newLine = $@"rem""{label}";
                     }
                     else
                         throw new ArgumentException("Let's cross this particular bridge when we get to it");
@@ -309,9 +310,20 @@ namespace CbmCode.CodeGeneration
             var sansLabels = new List<string>();
             foreach (var line in withLineNumbers)
             {
+                // Skip rem.
+                if (Regex.IsMatch(line, @"^[0-9]+\srem\"""))
+                {
+                    sansLabels.Add(line);
+                    continue;
+                }
+
+                // Replace label to line number
+
                 var newLine = line;
+
                 foreach (var ltl in labelToLineNumber)
-                    newLine = newLine.Replace(ltl.Key, ltl.Value);
+                    newLine = newLine.Replace(ltl.Key, ltl.Value); // TODO: Should not replace in strings.
+                
                 sansLabels.Add(newLine);
             }
 

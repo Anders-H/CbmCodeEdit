@@ -1,12 +1,10 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using System.Linq;
-using CbmCode.CodeGeneration;
+using CbmCodeTest.Common;
 
 namespace CbmCodeTest
 {
     [TestClass]
-    public class CodeGenerationTests
+    public class CodeGenerationTests : CodeGenerationBase
     {
         [TestMethod]
         public void RemovesComments()
@@ -97,7 +95,7 @@ let X = PI * 3 + E");
         public void LabelCanStandOnItsOwn()
         {
             var expected = A(
-"0 rem",
+"0 rem\"start",
 "1 goto 0");
             var source = SA(
 @":start
@@ -127,20 +125,6 @@ for counter=1 to 10");
             expected = A("0 for var$=1 to 10");
             source = SA(@"for var$=1 to 10");
             Test(expected, source);
-        }
-
-        T[] A<T>(params T[] args) =>
-            args;
-
-        string[] SA(string source) =>
-            source.Split(A(Environment.NewLine), StringSplitOptions.None);
-
-        static void Test(string[] expected, string[] actual)
-        {
-            var generate = new Generate(actual);
-            var (success, generations) = generate.Do();
-            Assert.IsTrue(success);
-            CollectionAssert.AreEqual(expected, generations.Last());
         }
     }
 }
