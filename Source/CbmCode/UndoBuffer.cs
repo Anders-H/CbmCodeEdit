@@ -5,7 +5,7 @@ namespace CbmCode
 {
     public class UndoBuffer
     {
-        private List<string> _buffer;
+        private readonly List<string> _buffer;
         private int _indexPointer;
 
         public UndoBuffer()
