@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace CbmCode
 {
@@ -13,18 +14,29 @@ namespace CbmCode
             _buffer = new List<string>();
         }
 
-        public bool CanUndo => false;
+        public bool CanUndo =>
+            _buffer.Count > 0 && _indexPointer >= 0;
         
-        public bool CanRedo => false;
+        public bool CanRedo =>
+            _buffer.Count > 0 && _indexPointer < _buffer.Count - 1;
 
         public void PushState(string state)
         {
+            while (_buffer.Count > _indexPointer + 1)
+                _buffer.RemoveAt(_buffer.Count - 1);
 
+            _buffer.Add(state);
+            _indexPointer = _buffer.Count - 1;
         }
 
         public string Undo()
         {
-            return "";
+            if (!CanUndo)
+                throw new SystemException("Can't undo.");
+
+            var ret = _buffer[_indexPointer];
+            _indexPointer--;
+            return ret;
         }
 
         public string Redo()
