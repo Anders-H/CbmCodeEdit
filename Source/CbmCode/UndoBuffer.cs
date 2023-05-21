@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace CbmCode
 {
@@ -22,6 +23,9 @@ namespace CbmCode
 
         public void PushState(string state)
         {
+            if (_buffer.Count > 0 && state == _buffer.Last())
+                return;
+
             while (_buffer.Count > _indexPointer + 1)
                 _buffer.RemoveAt(_buffer.Count - 1);
 
@@ -41,7 +45,11 @@ namespace CbmCode
 
         public string Redo()
         {
-            return "";
+            if (!CanRedo)
+                throw new SystemException("Can't redo.");
+
+            _indexPointer++;
+            return _buffer[_indexPointer];
         }
 
         public void GetBufferState(out int bufferSize, out int indexPointer)
