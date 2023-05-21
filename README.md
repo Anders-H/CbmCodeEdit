@@ -29,5 +29,5 @@ A simple text editor for editing enhanced Commodore BASIC code, and exporting it
 
 ## Examples*
 
-* (Hello World v1)[https://github.com/Anders-H/CbmCodeEdit/blob/main/Examples/hello_world_v1.md]
-* (Hello World v2)[https://github.com/Anders-H/CbmCodeEdit/blob/main/Examples/hello_world_v2.md]
+* [Hello World v1](https://github.com/Anders-H/CbmCodeEdit/blob/main/Examples/hello_world_v1.md)
+* [Hello World v2](https://github.com/Anders-H/CbmCodeEdit/blob/main/Examples/hello_world_v2.md)
