@@ -49,6 +49,7 @@
             this.outputWindowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.openGithubToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.btnNew = new System.Windows.Forms.ToolStripButton();
             this.btnOpen = new System.Windows.Forms.ToolStripButton();
@@ -62,7 +63,8 @@
             this.rtbIn = new System.Windows.Forms.RichTextBox();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.rtbOut = new System.Windows.Forms.RichTextBox();
-            this.openGithubToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.undoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.redoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -199,6 +201,9 @@
             // 
             // editToolStripMenuItem
             // 
+            this.editToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.undoToolStripMenuItem,
+            this.redoToolStripMenuItem});
             this.editToolStripMenuItem.Name = "editToolStripMenuItem";
             this.editToolStripMenuItem.Size = new System.Drawing.Size(39, 20);
             this.editToolStripMenuItem.Text = "&Edit";
@@ -231,6 +236,13 @@
             this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
             this.helpToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
             this.helpToolStripMenuItem.Text = "&Help";
+            // 
+            // openGithubToolStripMenuItem
+            // 
+            this.openGithubToolStripMenuItem.Name = "openGithubToolStripMenuItem";
+            this.openGithubToolStripMenuItem.Size = new System.Drawing.Size(151, 22);
+            this.openGithubToolStripMenuItem.Text = "Open Github...";
+            this.openGithubToolStripMenuItem.Click += new System.EventHandler(this.openGithubToolStripMenuItem_Click);
             // 
             // toolStrip1
             // 
@@ -303,6 +315,7 @@
             // btnUndo
             // 
             this.btnUndo.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.btnUndo.Enabled = false;
             this.btnUndo.Image = global::CbmCode.Properties.Resources._112_ArrowReturnLeft_Blue_16x16_72;
             this.btnUndo.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnUndo.Name = "btnUndo";
@@ -371,12 +384,21 @@
             this.rtbOut.Text = "";
             this.rtbOut.WordWrap = false;
             // 
-            // openGithubToolStripMenuItem
+            // undoToolStripMenuItem
             // 
-            this.openGithubToolStripMenuItem.Name = "openGithubToolStripMenuItem";
-            this.openGithubToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.openGithubToolStripMenuItem.Text = "Open Github...";
-            this.openGithubToolStripMenuItem.Click += new System.EventHandler(this.openGithubToolStripMenuItem_Click);
+            this.undoToolStripMenuItem.Enabled = false;
+            this.undoToolStripMenuItem.Image = global::CbmCode.Properties.Resources._112_ArrowReturnLeft_Blue_16x16_72;
+            this.undoToolStripMenuItem.Name = "undoToolStripMenuItem";
+            this.undoToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.undoToolStripMenuItem.Text = "Undo";
+            // 
+            // redoToolStripMenuItem
+            // 
+            this.redoToolStripMenuItem.Enabled = false;
+            this.redoToolStripMenuItem.Image = global::CbmCode.Properties.Resources._112_ArrowReturnRight_Blue_16x16_72;
+            this.redoToolStripMenuItem.Name = "redoToolStripMenuItem";
+            this.redoToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.redoToolStripMenuItem.Text = "Redo";
             // 
             // MainWindow
             // 
@@ -441,6 +463,8 @@
         private System.Windows.Forms.ToolStripButton btnRedo;
         private System.Windows.Forms.ToolStripButton btnUndo;
         private System.Windows.Forms.ToolStripMenuItem openGithubToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem undoToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem redoToolStripMenuItem;
     }
 }
 

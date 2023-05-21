@@ -27,36 +27,5 @@ A simple text editor for editing enhanced Commodore BASIC code, and exporting it
 
 ![Screenshot](https://raw.githubusercontent.com/Anders-H/CbmCodeEdit/main/screenshot.jpg)
 
-## Examples
+## Examples*
 
-### Hello world
-
-*Input:*
-
-```
-:loop print "hello world"
-goto loop
-```
-
-*Output:*
-
-```
-0 print "hello world"
-1 goto 0
-```
-
-*Input:*
-
-```
-:loop
-print "hello world"
-goto loop
-```
-
-*Output:*
-
-```
-0 rem"loop
-1 print "hello world"
-2 goto 0
-```
