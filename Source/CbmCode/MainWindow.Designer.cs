@@ -45,6 +45,8 @@
             this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
             this.quitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.undoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.redoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.outputWindowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -63,8 +65,6 @@
             this.rtbIn = new System.Windows.Forms.RichTextBox();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.rtbOut = new System.Windows.Forms.RichTextBox();
-            this.undoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.redoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -208,6 +208,24 @@
             this.editToolStripMenuItem.Size = new System.Drawing.Size(39, 20);
             this.editToolStripMenuItem.Text = "&Edit";
             // 
+            // undoToolStripMenuItem
+            // 
+            this.undoToolStripMenuItem.Enabled = false;
+            this.undoToolStripMenuItem.Image = global::CbmCode.Properties.Resources._112_ArrowReturnLeft_Blue_16x16_72;
+            this.undoToolStripMenuItem.Name = "undoToolStripMenuItem";
+            this.undoToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.undoToolStripMenuItem.Text = "Undo";
+            this.undoToolStripMenuItem.Click += new System.EventHandler(this.undoToolStripMenuItem_Click);
+            // 
+            // redoToolStripMenuItem
+            // 
+            this.redoToolStripMenuItem.Enabled = false;
+            this.redoToolStripMenuItem.Image = global::CbmCode.Properties.Resources._112_ArrowReturnRight_Blue_16x16_72;
+            this.redoToolStripMenuItem.Name = "redoToolStripMenuItem";
+            this.redoToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.redoToolStripMenuItem.Text = "Redo";
+            this.redoToolStripMenuItem.Click += new System.EventHandler(this.redoToolStripMenuItem_Click);
+            // 
             // viewToolStripMenuItem
             // 
             this.viewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -321,6 +339,7 @@
             this.btnUndo.Name = "btnUndo";
             this.btnUndo.Size = new System.Drawing.Size(23, 22);
             this.btnUndo.Text = "Undo";
+            this.btnUndo.Click += new System.EventHandler(this.btnUndo_Click);
             // 
             // btnRedo
             // 
@@ -331,6 +350,7 @@
             this.btnRedo.Name = "btnRedo";
             this.btnRedo.Size = new System.Drawing.Size(23, 22);
             this.btnRedo.Text = "Redo";
+            this.btnRedo.Click += new System.EventHandler(this.btnRedo_Click);
             // 
             // statusStrip1
             // 
@@ -384,22 +404,6 @@
             this.rtbOut.Text = "";
             this.rtbOut.WordWrap = false;
             // 
-            // undoToolStripMenuItem
-            // 
-            this.undoToolStripMenuItem.Enabled = false;
-            this.undoToolStripMenuItem.Image = global::CbmCode.Properties.Resources._112_ArrowReturnLeft_Blue_16x16_72;
-            this.undoToolStripMenuItem.Name = "undoToolStripMenuItem";
-            this.undoToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.undoToolStripMenuItem.Text = "Undo";
-            // 
-            // redoToolStripMenuItem
-            // 
-            this.redoToolStripMenuItem.Enabled = false;
-            this.redoToolStripMenuItem.Image = global::CbmCode.Properties.Resources._112_ArrowReturnRight_Blue_16x16_72;
-            this.redoToolStripMenuItem.Name = "redoToolStripMenuItem";
-            this.redoToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.redoToolStripMenuItem.Text = "Redo";
-            // 
             // MainWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -414,6 +418,8 @@
             this.Name = "MainWindow";
             this.Text = "CBM-Code";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainWindow_FormClosing);
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.MainWindow_FormClosed);
+            this.Shown += new System.EventHandler(this.MainWindow_Shown);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.toolStrip1.ResumeLayout(false);

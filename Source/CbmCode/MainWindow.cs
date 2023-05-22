@@ -5,6 +5,7 @@ using CbmCode.Text;
 using System;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace CbmCode
@@ -13,12 +14,17 @@ namespace CbmCode
     {
         private string _currentFilename;
         private bool _dirtyFlag;
+        private readonly UndoBuffer _undoBuffer;
+        private Thread _undoThread;
+        private bool _undoOperationInProgress;
 
         public MainWindow()
         {
             InitializeComponent();
             _currentFilename = "";
             _dirtyFlag = false;
+            _undoBuffer = new UndoBuffer();
+            _undoOperationInProgress = false;
         }
 
         private void quitToolStripMenuItem_Click(object sender, EventArgs e) =>
@@ -223,5 +229,84 @@ namespace CbmCode
 
         private void btnBuild_Click(object sender, EventArgs e) =>
             buildToolStripMenuItem_Click(sender, e);
+
+        private void btnUndo_Click(object sender, EventArgs e) =>
+            undoToolStripMenuItem_Click(sender, e);
+
+        private void btnRedo_Click(object sender, EventArgs e) =>
+            redoToolStripMenuItem_Click(sender, e);
+
+        private void undoToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            UpdateUndoRedoStatus();
+
+            if (!_undoBuffer.CanUndo)
+                return;
+
+            Cursor = Cursors.WaitCursor;
+
+            while (_undoOperationInProgress)
+                Thread.Sleep(10);
+
+            if (_undoBuffer.CanUndo)
+                rtbIn.Text = _undoBuffer.Undo();
+
+            UpdateUndoRedoStatus();
+            Cursor = Cursors.WaitCursor;
+        }
+
+        private void redoToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            UpdateUndoRedoStatus();
+
+            if (!_undoBuffer.CanRedo)
+                return;
+
+            Cursor = Cursors.WaitCursor;
+
+            while (_undoOperationInProgress)
+                Thread.Sleep(10);
+
+            if (_undoBuffer.CanRedo)
+                rtbIn.Text = _undoBuffer.Redo();
+
+            UpdateUndoRedoStatus();
+            Cursor = Cursors.WaitCursor;
+        }
+
+        private void UpdateUndoRedoStatus()
+        {
+            undoToolStripMenuItem.Enabled = _undoBuffer.CanUndo;
+            btnUndo.Enabled = undoToolStripMenuItem.Enabled;
+            redoToolStripMenuItem.Enabled = _undoBuffer.CanRedo;
+            btnRedo.Enabled = redoToolStripMenuItem.Enabled;
+        }
+
+        private void MainWindow_Shown(object sender, EventArgs e)
+        {
+            _undoThread = new Thread(() =>
+            {
+                do
+                {
+                    Thread.Sleep(2000);
+                    Console.WriteLine("Tjo!");
+                    Thread.Sleep(2000);
+                } while (true);
+            });
+
+            _undoThread.Start();
+        }
+
+        private void MainWindow_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            try
+            {
+                _undoThread.Abort();
+            }
+            catch
+            {
+                // ignored
+            }
+        }
     }
 }
