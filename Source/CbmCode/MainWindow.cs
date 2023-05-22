@@ -165,7 +165,7 @@ namespace CbmCode
 
         private void MainWindow_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (_dirtyFlag && e.CloseReason == CloseReason.UserClosing && MessageDisplayer.Ask(this, @"You have unsaved changes. Quit?", @"Quit"))
+            if (_dirtyFlag && e.CloseReason == CloseReason.UserClosing && !MessageDisplayer.Ask(this, @"You have unsaved changes. Quit?", @"Quit"))
                 e.Cancel = true;
         }
 
@@ -252,7 +252,7 @@ namespace CbmCode
                 rtbIn.Text = _undoBuffer.Undo();
 
             UpdateUndoRedoStatus();
-            Cursor = Cursors.WaitCursor;
+            Cursor = Cursors.Default;
         }
 
         private void redoToolStripMenuItem_Click(object sender, EventArgs e)
@@ -271,7 +271,7 @@ namespace CbmCode
                 rtbIn.Text = _undoBuffer.Redo();
 
             UpdateUndoRedoStatus();
-            Cursor = Cursors.WaitCursor;
+            Cursor = Cursors.Default;
         }
 
         private void UpdateUndoRedoStatus()
@@ -284,17 +284,27 @@ namespace CbmCode
 
         private void MainWindow_Shown(object sender, EventArgs e)
         {
+            var pushUndoState = new Action(PushUndoState);
+
             _undoThread = new Thread(() =>
             {
                 do
                 {
                     Thread.Sleep(2000);
-                    Console.WriteLine("Tjo!");
+                    Invoke(pushUndoState);
                     Thread.Sleep(2000);
                 } while (true);
             });
 
             _undoThread.Start();
+        }
+
+        private void PushUndoState()
+        {
+            _undoBuffer.PushState(rtbIn.Text);
+            UpdateUndoRedoStatus();
+            _undoBuffer.GetBufferState(out var bufferSize, out var indexPointer);
+            Debug.WriteLine($"Buffer size: {bufferSize}, index pointer: {indexPointer}");
         }
 
         private void MainWindow_FormClosed(object sender, FormClosedEventArgs e)
