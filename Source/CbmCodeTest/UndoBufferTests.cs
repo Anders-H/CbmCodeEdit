@@ -11,7 +11,7 @@ namespace CbmCodeTest
         public void EmptyBufferCantUndoOrRedo()
         {
             var undoBuffer = new UndoBuffer();
-            AssertCantUndoOrRedo(undoBuffer);
+            AssertCantUndoOrRedo(undoBuffer, "");
             AssertBufferSizeAndIndexPointer(undoBuffer, 0, -1);
         }
 
@@ -19,8 +19,8 @@ namespace CbmCodeTest
         public void OnePushedStateEqualsBufferSizeOfOne()
         {
             var undoBuffer = new UndoBuffer();
-            undoBuffer.PushState("Hello");
-            AssertCanUndoButNotRedo(undoBuffer);
+            undoBuffer.PushState("Hello 1");
+            AssertCanUndoButNotRedo(undoBuffer, "Hello 2");
             AssertBufferSizeAndIndexPointer(undoBuffer, 1, 0);
         }
 
@@ -31,20 +31,20 @@ namespace CbmCodeTest
             undoBuffer.PushState("Hello 1");
             undoBuffer.PushState("Hello 2");
             undoBuffer.PushState("Hello 3");
-            AssertCanUndoButNotRedo(undoBuffer);
+            AssertCanUndoButNotRedo(undoBuffer, "Hello 4");
             AssertBufferSizeAndIndexPointer(undoBuffer, 3, 2);
-            var result = undoBuffer.Undo();
+            var result = undoBuffer.Undo("Hello 4");
             Assert.AreEqual("Hello 3", result);
             AssertBufferSizeAndIndexPointer(undoBuffer, 3, 1);
-            result = undoBuffer.Undo();
+            result = undoBuffer.Undo("Hello 3");
             Assert.AreEqual("Hello 2", result);
             AssertBufferSizeAndIndexPointer(undoBuffer, 3, 0);
-            Assert.IsTrue(undoBuffer.CanUndo);
+            Assert.IsTrue(undoBuffer.CanUndo("Hello 2"));
             Assert.IsTrue(undoBuffer.CanRedo);
-            result = undoBuffer.Undo();
+            result = undoBuffer.Undo("Hello 2");
             Assert.AreEqual("Hello 1", result);
             AssertBufferSizeAndIndexPointer(undoBuffer, 3, -1);
-            Assert.IsFalse(undoBuffer.CanUndo);
+            Assert.IsFalse(undoBuffer.CanUndo("Hello 1"));
             Assert.IsTrue(undoBuffer.CanRedo);
         }
 
@@ -55,13 +55,13 @@ namespace CbmCodeTest
             undoBuffer.PushState("Hello 1");
             undoBuffer.PushState("Hello 2");
             undoBuffer.PushState("Hello 3");
-            undoBuffer.Undo();
-            undoBuffer.Undo();
-            var undo = undoBuffer.Undo();
+            undoBuffer.Undo("Hello 4");
+            undoBuffer.Undo("Hello 3");
+            var undo = undoBuffer.Undo("Hello 2");
             Assert.AreEqual("Hello 1", undo);
-            Assert.IsFalse(undoBuffer.CanUndo);
+            Assert.IsFalse(undoBuffer.CanUndo("Hello 1"));
             Assert.IsTrue(undoBuffer.CanRedo);
-            Assert.ThrowsException<SystemException>(() => undoBuffer.Undo());
+            Assert.ThrowsException<SystemException>(() => undoBuffer.Undo("Hello 1"));
         }
 
         [TestMethod]
@@ -85,13 +85,13 @@ namespace CbmCodeTest
             undoBuffer.PushState("Hello 1");
             undoBuffer.PushState("Hello 2");
             undoBuffer.PushState("Hello 3");
-            AssertCanUndoButNotRedo(undoBuffer);
+            AssertCanUndoButNotRedo(undoBuffer, "Hello 4");
             AssertBufferSizeAndIndexPointer(undoBuffer, 3, 2);
-            undoBuffer.Undo();
-            AssertCanUndoAndRedo(undoBuffer);
+            undoBuffer.Undo("Hello 4");
+            AssertCanUndoAndRedo(undoBuffer, "Hello 3");
             AssertBufferSizeAndIndexPointer(undoBuffer, 3, 1);
             var redo = undoBuffer.Redo();
-            AssertCanUndoButNotRedo(undoBuffer);
+            AssertCanUndoButNotRedo(undoBuffer, "Hello 4");
             AssertBufferSizeAndIndexPointer(undoBuffer, 3, 2);
             Assert.AreEqual("Hello 3", redo);
         }
@@ -106,33 +106,33 @@ namespace CbmCodeTest
             undoBuffer.PushState("Hello 4");
             undoBuffer.PushState("Hello 5");
             undoBuffer.PushState("Hello 6");
-            AssertCanUndoButNotRedo(undoBuffer);
+            AssertCanUndoButNotRedo(undoBuffer, "Hello 7");
             AssertBufferSizeAndIndexPointer(undoBuffer, 6, 5);
-            undoBuffer.Undo();
-            undoBuffer.Undo();
-            undoBuffer.Undo();
-            AssertCanUndoAndRedo(undoBuffer);
+            undoBuffer.Undo("Hello 7");
+            undoBuffer.Undo("Hello 6");
+            undoBuffer.Undo("Hello 5");
+            AssertCanUndoAndRedo(undoBuffer, "Hello 4");
             AssertBufferSizeAndIndexPointer(undoBuffer, 6, 2);
             undoBuffer.PushState("New Hello");
             AssertBufferSizeAndIndexPointer(undoBuffer, 4, 3);
-            AssertCanUndoButNotRedo(undoBuffer);
+            AssertCanUndoButNotRedo(undoBuffer, "New Hello");
         }
 
-        private void AssertCantUndoOrRedo(UndoBuffer b)
+        private void AssertCantUndoOrRedo(UndoBuffer b, string currentState)
         {
-            Assert.IsFalse(b.CanUndo);
+            Assert.IsFalse(b.CanUndo(currentState));
             Assert.IsFalse(b.CanRedo);
         }
 
-        private void AssertCanUndoButNotRedo(UndoBuffer b)
+        private void AssertCanUndoButNotRedo(UndoBuffer b, string currentState)
         {
-            Assert.IsTrue(b.CanUndo);
+            Assert.IsTrue(b.CanUndo(currentState));
             Assert.IsFalse(b.CanRedo);
         }
 
-        private void AssertCanUndoAndRedo(UndoBuffer b)
+        private void AssertCanUndoAndRedo(UndoBuffer b, string currentState)
         {
-            Assert.IsTrue(b.CanUndo);
+            Assert.IsTrue(b.CanUndo(currentState));
             Assert.IsTrue(b.CanRedo);
         }
 

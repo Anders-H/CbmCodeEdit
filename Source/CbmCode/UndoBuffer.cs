@@ -13,10 +13,11 @@ namespace CbmCode
         {
             _indexPointer = -1;
             _buffer = new List<string>();
+            PushState("");
         }
 
-        public bool CanUndo =>
-            _buffer.Count > 0 && _indexPointer >= 0;
+        public bool CanUndo(string currentState) =>
+            _buffer.Count > 0 && _indexPointer >= 0 && _indexPointer < _buffer.Count && _buffer[_indexPointer] != currentState;
         
         public bool CanRedo =>
             _buffer.Count > 0 && _indexPointer < _buffer.Count - 1;
@@ -33,9 +34,9 @@ namespace CbmCode
             _indexPointer = _buffer.Count - 1;
         }
 
-        public string Undo()
+        public string Undo(string currentState)
         {
-            if (!CanUndo)
+            if (!CanUndo(currentState))
                 throw new SystemException("Can't undo.");
 
             var ret = _buffer[_indexPointer];

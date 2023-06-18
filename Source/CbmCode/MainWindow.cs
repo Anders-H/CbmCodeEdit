@@ -240,7 +240,7 @@ namespace CbmCode
         {
             UpdateUndoRedoStatus();
 
-            if (!_undoBuffer.CanUndo)
+            if (!_undoBuffer.CanUndo(rtbIn.Text))
                 return;
 
             Cursor = Cursors.WaitCursor;
@@ -248,8 +248,8 @@ namespace CbmCode
             while (_undoOperationInProgress)
                 Thread.Sleep(10);
 
-            if (_undoBuffer.CanUndo)
-                rtbIn.Text = _undoBuffer.Undo();
+            if (_undoBuffer.CanUndo(rtbIn.Text))
+                rtbIn.Text = _undoBuffer.Undo(rtbIn.Text);
 
             UpdateUndoRedoStatus();
             Cursor = Cursors.Default;
@@ -276,7 +276,7 @@ namespace CbmCode
 
         private void UpdateUndoRedoStatus()
         {
-            undoToolStripMenuItem.Enabled = _undoBuffer.CanUndo;
+            undoToolStripMenuItem.Enabled = _undoBuffer.CanUndo(rtbIn.Text);
             btnUndo.Enabled = undoToolStripMenuItem.Enabled;
             redoToolStripMenuItem.Enabled = _undoBuffer.CanRedo;
             btnRedo.Enabled = redoToolStripMenuItem.Enabled;
