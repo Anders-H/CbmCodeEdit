@@ -1,35 +1,34 @@
 ﻿using CbmCodeTest.Common;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace CbmCodeTest
+namespace CbmCodeTest;
+
+[TestClass]
+public class ReadmeSamplesTests : CodeGenerationBase
 {
-    [TestClass]
-    public class ReadmeSamplesTests : CodeGenerationBase
+    [TestMethod]
+    public void HelloWorldExample1()
     {
-        [TestMethod]
-        public void HelloWorldExample1()
-        {
-            var expected = SA(@"0 print ""hello world""
+        var expected = SA(@"0 print ""hello world""
 1 goto 0");
 
-            var source = SA(@":loop print ""hello world""
+        var source = SA(@":loop print ""hello world""
 goto loop");
 
-            Test(expected, source);
-        }
+        Test(expected, source);
+    }
 
-        [TestMethod]
-        public void HelloWorldExample2()
-        {
-            var expected = SA(@"0 rem""loop
+    [TestMethod]
+    public void HelloWorldExample2()
+    {
+        var expected = SA(@"0 rem""loop
 1 print ""hello world""
 2 goto 0");
 
-            var source = SA(@":loop
+        var source = SA(@":loop
 print ""hello world""
 goto loop");
 
-            Test(expected, source);
-        }
+        Test(expected, source);
     }
 }

@@ -1,6 +1,6 @@
 # Commodore BASIC Code Editor
 
-A simple text editor for editing enhanced Commodore BASIC code, and exporting it as runnable source code.
+A simple text editor for editing macro enhanced Commodore BASIC code, and exporting it as runnable source code.
 
 ## Editor features
 
@@ -27,7 +27,12 @@ A simple text editor for editing enhanced Commodore BASIC code, and exporting it
 
 ![Screenshot](https://raw.githubusercontent.com/Anders-H/CbmCodeEdit/main/screenshot.jpg)
 
-## Examples*
+# Rules
 
-* [Hello World v1](https://github.com/Anders-H/CbmCodeEdit/blob/main/Examples/hello_world_v1.md)
-* [Hello World v2](https://github.com/Anders-H/CbmCodeEdit/blob/main/Examples/hello_world_v2.md)
+This is how you use the extended macro features of the language:
+
+* Undeclared variables cannot be used
+* All variables (long names allowed) must be declared using the `@variables` macro
+* [Labels written on the same line as the following code will be anonymous](https://github.com/Anders-H/CbmCodeEdit/blob/main/Examples/labels/hello_world_v1.md)
+* [Labels written on an own line will keep their name in the evaluated code](https://github.com/Anders-H/CbmCodeEdit/blob/main/Examples/labels/hello_world_v2.md)
+* Everything else is copied unchanged to the output

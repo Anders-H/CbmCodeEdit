@@ -2,61 +2,66 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace CbmCode
+namespace CbmCode;
+
+public class UndoBuffer
 {
-    public class UndoBuffer
+    private readonly List<string> _buffer;
+    private int _indexPointer;
+
+    public UndoBuffer()
     {
-        private readonly List<string> _buffer;
-        private int _indexPointer;
+        _buffer = [];
+        Clear();
+    }
 
-        public UndoBuffer()
-        {
-            _indexPointer = -1;
-            _buffer = new List<string>();
-            PushState("");
-        }
+    public void Clear()
+    {
+        _buffer.Clear();
+        _indexPointer = -1;
+        PushState("");
+    }
 
-        public bool CanUndo(string currentState) =>
-            _buffer.Count > 0 && _indexPointer >= 0 && _indexPointer < _buffer.Count && _buffer[_indexPointer] != currentState;
-        
-        public bool CanRedo =>
-            _buffer.Count > 0 && _indexPointer < _buffer.Count - 1;
+    public bool CanUndo(string currentState) =>
+        _buffer.Count > 0 && _indexPointer >= 0 && _indexPointer < _buffer.Count && _buffer[_indexPointer] != currentState;
 
-        public void PushState(string state)
-        {
-            if (_buffer.Count > 0 && state == _buffer.Last())
-                return;
+    public bool CanRedo =>
+        _buffer.Count > 0 && _indexPointer < _buffer.Count - 1;
 
-            while (_buffer.Count > _indexPointer + 1)
-                _buffer.RemoveAt(_buffer.Count - 1);
+    public void PushState(string state)
+    {
+        if (_buffer.Count > 0 && state == _buffer.Last())
+            return;
 
-            _buffer.Add(state);
-            _indexPointer = _buffer.Count - 1;
-        }
+        while (_buffer.Count > _indexPointer + 1)
+            _buffer.RemoveAt(_buffer.Count - 1);
 
-        public string Undo(string currentState)
-        {
-            if (!CanUndo(currentState))
-                throw new SystemException("Can't undo.");
+        _buffer.Add(state);
+        _indexPointer = _buffer.Count - 1;
+    }
 
-            var ret = _buffer[_indexPointer];
-            _indexPointer--;
-            return ret;
-        }
+    public string Undo(string currentState)
+    {
+        if (!CanUndo(currentState))
+            throw new SystemException("Can't undo.");
 
-        public string Redo()
-        {
-            if (!CanRedo)
-                throw new SystemException("Can't redo.");
+        var ret = _buffer[_indexPointer];
+        _indexPointer--;
+        return ret;
+    }
 
-            _indexPointer++;
-            return _buffer[_indexPointer];
-        }
+    public string Redo()
+    {
+        if (!CanRedo)
+            throw new SystemException("Can't redo.");
 
-        public void GetBufferState(out int bufferSize, out int indexPointer)
-        {
-            bufferSize = _buffer.Count;
-            indexPointer = _indexPointer;
-        }
+        _indexPointer++;
+        return _buffer[_indexPointer];
+    }
+
+    public void GetBufferState(out int bufferSize, out int indexPointer)
+    {
+        bufferSize = _buffer.Count;
+        indexPointer = _indexPointer;
     }
 }
